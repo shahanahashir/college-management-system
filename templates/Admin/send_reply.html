@@ -1,0 +1,504 @@
+{% extends 'Admin/dashboard1.html' %}
+{% block body %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Send Reply - Feedback</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <style>
+        /* ===== PAGE STYLES ===== */
+        .reply-wrapper {
+            padding: 10px 0 30px 0;
+        }
+
+        /* ===== PAGE HEADER ===== */
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 28px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .page-header .header-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .page-header .header-left .icon-circle {
+            width: 52px;
+            height: 52px;
+            background: linear-gradient(145deg, #2c3e50, #1a2a3a);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 14px rgba(44, 62, 80, 0.2);
+        }
+
+        .page-header .header-left .icon-circle i {
+            font-size: 26px;
+            color: white;
+        }
+
+        .page-header .header-left .header-text h2 {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1a2a3a;
+            margin: 0;
+            letter-spacing: -0.3px;
+        }
+
+        .page-header .header-left .header-text .subtitle {
+            font-size: 14px;
+            color: #6c757d;
+            margin: 0;
+        }
+
+        /* ===== FORM CARD ===== */
+        .form-card {
+            background: #ffffff;
+            border-radius: 18px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+            border: 1px solid #e9ecef;
+            overflow: hidden;
+            max-width: 780px;
+            margin: 0 auto;
+            transition: box-shadow 0.3s ease;
+        }
+
+        .form-card:hover {
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+        }
+
+        .form-card .card-header {
+            padding: 18px 28px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .form-card .card-header .card-title {
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-card .card-header .card-title i {
+            color: #2c3e50;
+            font-size: 20px;
+        }
+
+        .form-card .card-header .card-title .badge-reply {
+            background: #dc3545;
+            color: white;
+            padding: 2px 14px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .form-card .card-header .timestamp {
+            font-size: 13px;
+            color: #6c757d;
+        }
+
+        .form-card .card-header .timestamp i {
+            margin-right: 5px;
+        }
+
+        .form-card .card-body {
+            padding: 32px 34px 34px 34px;
+        }
+
+        /* ===== FORM STYLES ===== */
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-group label {
+            font-weight: 600;
+            font-size: 14px;
+            color: #2c3e50;
+            margin-bottom: 6px;
+            display: block;
+        }
+
+        .form-group label .required {
+            color: #dc3545;
+            margin-left: 3px;
+        }
+
+        .form-group .form-control {
+            border-radius: 12px;
+            padding: 12px 18px;
+            font-size: 14px;
+            border: 1.5px solid #dee2e6;
+            background: #fafbfc;
+            transition: all 0.3s ease;
+            color: #2c3e50;
+            width: 100%;
+            resize: vertical;
+            min-height: 130px;
+        }
+
+        .form-group .form-control:hover {
+            background: #ffffff;
+            border-color: #c8d0d9;
+        }
+
+        .form-group .form-control:focus {
+            border-color: #2c3e50;
+            box-shadow: 0 0 0 4px rgba(44, 62, 80, 0.08);
+            background: #ffffff;
+            outline: none;
+        }
+
+        .form-group .form-control::placeholder {
+            color: #adb5bd;
+            font-size: 13px;
+        }
+
+        /* ===== CHARACTER COUNT ===== */
+        .char-count {
+            text-align: right;
+            font-size: 12px;
+            color: #6c757d;
+            margin-top: 6px;
+            padding-right: 4px;
+        }
+
+        .char-count .char-limit {
+            color: #adb5bd;
+        }
+
+        .char-count .char-limit.warning {
+            color: #dc3545;
+        }
+
+        /* ===== SUBMIT BUTTON ===== */
+        .btn-submit {
+            padding: 14px 48px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 12px;
+            border: none;
+            background: linear-gradient(145deg, #28a745, #218838);
+            color: white;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            letter-spacing: 0.3px;
+            box-shadow: 0 4px 16px rgba(40, 167, 69, 0.25);
+        }
+
+        .btn-submit:hover {
+            background: linear-gradient(145deg, #1e7e34, #19692b);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 28px rgba(40, 167, 69, 0.35);
+        }
+
+        .btn-submit:active {
+            transform: scale(0.97);
+            box-shadow: 0 2px 8px rgba(40, 167, 69, 0.2);
+        }
+
+        .btn-submit i {
+            font-size: 20px;
+        }
+
+        /* ===== BUTTON CENTER ===== */
+        .button-center {
+            text-align: center;
+            margin-top: 10px;
+            padding-top: 6px;
+        }
+
+        /* ===== INFO ALERT ===== */
+        .info-alert {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 14px 20px;
+            margin-bottom: 24px;
+            border-left: 4px solid #2c3e50;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .info-alert i {
+            color: #2c3e50;
+            font-size: 20px;
+            margin-top: 2px;
+        }
+
+        .info-alert .info-text {
+            font-size: 14px;
+            color: #495057;
+        }
+
+        .info-alert .info-text strong {
+            color: #2c3e50;
+        }
+
+        /* ===== DIVIDER ===== */
+        .form-divider {
+            border: none;
+            border-top: 1px solid #e9ecef;
+            margin: 20px 0 24px 0;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .form-card .card-body {
+                padding: 22px 20px 26px 20px;
+            }
+
+            .form-card .card-header {
+                padding: 14px 20px;
+            }
+
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .page-header .header-left .header-text h2 {
+                font-size: 20px;
+            }
+
+            .page-header .header-left .icon-circle {
+                width: 44px;
+                height: 44px;
+            }
+
+            .page-header .header-left .icon-circle i {
+                font-size: 22px;
+            }
+
+            .btn-submit {
+                width: 100%;
+                justify-content: center;
+                padding: 13px 24px;
+                font-size: 15px;
+            }
+
+            .form-group .form-control {
+                font-size: 13px;
+                padding: 10px 16px;
+                min-height: 110px;
+            }
+
+            .form-group label {
+                font-size: 13px;
+            }
+
+            .form-card .card-header .card-title {
+                font-size: 14px;
+            }
+
+            .info-alert {
+                padding: 12px 16px;
+            }
+
+            .info-alert .info-text {
+                font-size: 13px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .form-card .card-body {
+                padding: 18px 16px 22px 16px;
+            }
+
+            .form-card .card-header {
+                padding: 12px 16px;
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .form-group .form-control {
+                font-size: 12px;
+                padding: 8px 14px;
+                min-height: 100px;
+                border-radius: 10px;
+            }
+
+            .btn-submit {
+                font-size: 14px;
+                padding: 11px 20px;
+            }
+
+            .page-header .header-left .header-text h2 {
+                font-size: 18px;
+            }
+
+            .page-header .header-left .icon-circle {
+                width: 38px;
+                height: 38px;
+            }
+
+            .page-header .header-left .icon-circle i {
+                font-size: 18px;
+            }
+
+            .form-card .card-header .timestamp {
+                font-size: 11px;
+            }
+
+            .info-alert {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+                padding: 14px;
+            }
+
+            .info-alert .info-text {
+                font-size: 12px;
+            }
+
+            .char-count {
+                font-size: 11px;
+            }
+        }
+
+        /* ===== VALIDATION STYLES ===== */
+        .form-control:invalid:not(:placeholder-shown) {
+            border-color: #dc3545;
+        }
+
+        .form-control:invalid:not(:placeholder-shown):focus {
+            border-color: #dc3545;
+            box-shadow: 0 0 0 4px rgba(220, 53, 69, 0.08);
+        }
+
+        .form-control:valid:not(:placeholder-shown) {
+            border-color: #28a745;
+        }
+
+        .form-control:valid:not(:placeholder-shown):focus {
+            border-color: #28a745;
+            box-shadow: 0 0 0 4px rgba(40, 167, 69, 0.08);
+        }
+    </style>
+</head>
+<body>
+
+<div class="reply-wrapper">
+
+    <!-- ===== PAGE HEADER ===== -->
+    <div class="page-header">
+        <div class="header-left">
+            <div class="icon-circle">
+                <i class="bi bi-reply-all-fill"></i>
+            </div>
+            <div class="header-text">
+                <h2>Send Reply</h2>
+                <p class="subtitle">Respond to student feedback</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== FORM CARD ===== -->
+    <div class="form-card">
+        <div class="card-header">
+            <div class="card-title">
+                <i class="bi bi-chat-dots-fill"></i>
+                Reply to Feedback
+                <span class="badge-reply">PENDING REPLY</span>
+            </div>
+            <div class="timestamp">
+                <i class="bi bi-clock"></i>
+                {% now "d M Y, h:i A" %}
+            </div>
+        </div>
+
+        <div class="card-body">
+            <form method="post" enctype="multipart/form-data" action="/myapp/send_reply_post">
+                {% csrf_token %}
+                <input type="hidden" name="id" value="{{ id }}">
+
+                <!-- Info Alert -->
+                <div class="info-alert">
+                    <i class="bi bi-info-circle"></i>
+                    <div class="info-text">
+                        <strong>Note:</strong> Your reply will be sent to the student and visible in their feedback history.
+                        Please ensure your response is clear and professional.
+                    </div>
+                </div>
+
+                <!-- Reply Text -->
+                <div class="form-group">
+                    <label for="reviewText">
+                        <i class="bi bi-pencil" style="margin-right: 6px;"></i>
+                        Reply <span class="required">*</span>
+                    </label>
+                    <textarea class="form-control" name="reply" id="replyText" rows="5"
+                              placeholder="Write your reply here..."
+                              required
+                              oninvalid="this.setCustomValidity('Please enter a reply')"
+                              oninput="this.setCustomValidity('')"
+                              maxlength="1000"></textarea>
+                    <div class="char-count">
+                        <span id="charCount">0</span>
+                        <span class="char-limit">/ 1000 characters</span>
+                    </div>
+                </div>
+
+                <hr class="form-divider">
+
+                <!-- Submit Button -->
+                <div class="button-center">
+                    <button type="submit" class="btn-submit">
+                        <i class="bi bi-send-fill"></i>
+                        SEND REPLY
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- ===== CHARACTER COUNTER SCRIPT ===== -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const textarea = document.getElementById('replyText');
+        const charCount = document.getElementById('charCount');
+        const charLimit = document.querySelector('.char-limit');
+
+        textarea.addEventListener('input', function() {
+            const count = this.value.length;
+            charCount.textContent = count;
+
+            if (count > 900) {
+                charLimit.classList.add('warning');
+                charCount.style.color = '#dc3545';
+            } else {
+                charLimit.classList.remove('warning');
+                charCount.style.color = '#6c757d';
+            }
+        });
+    });
+</script>
+
+</body>
+</html>
+{% endblock %}
